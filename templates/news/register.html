@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Star News 24×7</title>
+    <link rel="stylesheet" href="{% static 'news/css/style.css' %}">
+</head>
+<body class="auth-page">
+    <main class="auth-shell">
+        <section class="auth-panel">
+            <a class="auth-brand" href="{% url 'home' %}">
+                <img class="auth-logo" src="{% static 'news-image/logo.svg.jpeg' %}" alt="Star News 24×7 logo">
+                <span>Star News 24×7</span>
+            </a>
+            <h1>Create an account</h1>
+            <p>Register with your email and join the premium live news experience.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="auth-field">
+                    <label for="id_full_name">Full Name</label>
+                    {{ form.full_name }}
+                    {% if form.full_name.errors %}
+                        <div class="alert">{{ form.full_name.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+                <div class="auth-field">
+                    <label for="id_username">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="alert">{{ form.username.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+                <div class="auth-field">
+                    <label for="id_email">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="alert">{{ form.email.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+                <div class="auth-field">
+                    <label for="id_password1">Password</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                        <div class="alert">{{ form.password1.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+                <div class="auth-field">
+                    <label for="id_password2">Confirm Password</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                        <div class="alert">{{ form.password2.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="auth-button">Create account</button>
+            </form>
+
+            <div class="divider"><span>or sign in with</span></div>
+            <a class="oauth-button" href="/accounts/google/login/">
+                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google logo">
+                Continue with Google
+            </a>
+
+            <p class="auth-note">Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+        </section>
+    </main>
+</body>
+</html>

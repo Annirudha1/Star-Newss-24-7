@@ -1,0 +1,82 @@
+{% extends "news/base.html" %}
+
+{% block content %}
+<section class="intro-panel">
+    <div>
+        <h2>Breaking News & Latest Updates</h2>
+        {% if selected_category %}
+            <p>Showing videos for category “{{ selected_category.name }}”.</p>
+        {% else %}
+            <p>Stay informed with the latest headlines, video reports, and real-time updates from India and around the world.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="video-grid">
+    {% for video in videos %}
+    <article class="card">
+        <div class="video-card" data-watch-url="https://www.youtube.com/watch?v={{ video.video_id }}">
+            <button type="button" class="video-preview" data-embed-url="{{ video.embed_url }}" data-watch-url="https://www.youtube.com/watch?v={{ video.video_id }}" style="background-image: url('{{ video.thumbnail_url }}');" aria-label="Play {{ video.title }}">
+                <span class="play-icon"></span>
+            </button>
+            <div class="video-frame" aria-hidden="true"></div>
+        </div>
+        <div class="card-body">
+            <span class="badge">News Clip</span>
+            <h3>{{ video.title }}</h3>
+            <p class="meta">Published {{ video.created_at|date:'F j, Y H:i' }}</p>
+            <div class="video-controls">
+                <button type="button" class="like-btn" data-pk="{{ video.id }}" aria-label="Like this video">
+                    <span class="like-icon">❤</span>
+                    <span class="like-count">{{ video.like_count }}</span>
+                </button>
+
+                <button type="button" class="comment-toggle" data-pk="{{ video.id }}" aria-expanded="false" aria-controls="comments-{{ video.id }}">
+                    <span class="comment-icon">💬</span>
+                    <span class="comment-count">{{ video.comments.count }}</span>
+                </button>
+            </div>
+
+            <div class="comments" id="comments-{{ video.id }}" hidden>
+                <ul class="comment-list">
+                    {% for comment in video.comments.all %}
+                        <li class="comment-item"><strong>{% if comment.user %}{{ comment.user.username }}{% else %}Anon{% endif %}</strong>: {{ comment.content }}</li>
+                    {% empty %}
+                        <li class="comment-item empty">No comments yet.</li>
+                    {% endfor %}
+                </ul>
+
+                {% if request.user.is_authenticated %}
+                <form class="comment-form" data-pk="{{ video.id }}" method="post" action="{% url 'video-comment' video.id %}">
+                    {% csrf_token %}
+                    <textarea name="content" rows="2" placeholder="Add a comment" required></textarea>
+                    <button type="submit" class="comment-submit">Comment</button>
+                </form>
+                {% else %}
+                <p class="comment-login">Please <a href="{% url 'login' %}">sign in</a> to comment.</p>
+                {% endif %}
+            </div>
+        </div>
+    </article>
+    {% empty %}
+    <div class="empty-state">
+        <p>No videos yet. Add YouTube links in the Django admin to fill this page.</p>
+    </div>
+    {% endfor %}
+</section>
+
+<section class="content-panel">
+    <div class="content-grid">
+        <article class="content-card">
+            <h3>About Us</h3>
+            <p>Star News 24×7 brings you trusted news videos, live headlines, and trending stories from across India and beyond.</p>
+            <p><a href="{% url 'about' %}">Learn more about our mission</a></p>
+        </article>
+        <article class="content-card">
+            <h3>Contact Us</h3>
+            <p>Have feedback or questions? Reach out for support, partnership inquiries, or news tips.</p>
+            <p><a href="{% url 'contact' %}">Get in touch with us</a></p>
+        </article>
+    </div>
+</section>
+{% endblock %}

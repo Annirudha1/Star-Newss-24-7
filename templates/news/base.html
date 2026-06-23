@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star News 24×7</title>
+    <link rel="stylesheet" href="{% static 'news/css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="navbar">
+            <div class="site-brand">
+                <a class="brand-link" href="{% url 'home' %}">
+                    <img class="brand-logo" src="{% static 'news-image/logo.svg.jpeg' %}" alt="Star News 24×7 logo">
+                    <div class="brand-copy">
+                        <p class="brand-name">Star News 24×7</p>
+                        <p class="brand-tagline">Breaking news. Live headlines.</p>
+                    </div>
+                </a>
+            </div>
+
+            <button id="nav-menu-toggle" class="nav-menu-toggle" aria-expanded="false" aria-label="Open navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="nav-menu" id="nav-menu" aria-label="Primary navigation">
+                <ul class="nav-list">
+                    <li><a href="{% url 'home' %}" class="nav-link{% if current_page == 'home' %} active{% endif %}">Home</a></li>
+                    {% for category in categories %}
+                        <li><a href="{% url 'category_videos' category.slug %}" class="nav-link{% if selected_category == category %} active{% endif %}">{{ category.name }}</a></li>
+                    {% empty %}
+                        <li><span class="nav-link">No categories yet</span></li>
+                    {% endfor %}
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                {% if request.user.is_authenticated %}
+                    <a class="button outline" href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                    <a class="button outline" href="{% url 'register' %}">Register</a>
+                    <button id="nav-login-toggle" class="nav-login-toggle" aria-expanded="false" aria-label="Open login panel">
+                        <span class="login-icon" aria-hidden="true">🔐</span>
+                    </button>
+                    <div id="nav-login-panel" class="login-dropdown" aria-hidden="true">
+                        <form method="post" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            <div class="nav-field">
+                                <input type="email" name="email" class="nav-input" placeholder="Email" required>
+                            </div>
+                            <div class="nav-field">
+                                <input type="password" name="password" class="nav-input" placeholder="Password" required>
+                            </div>
+                            <button type="submit" class="auth-button nav-submit">Sign in</button>
+                            <div class="divider"><span>or</span></div>
+                            <a class="oauth-button nav-oauth" href="/accounts/google/login/">
+                                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google logo">
+                                Continue with Google
+                            </a>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer-bar">
+        <p>Star News 24×7 © {% now "Y" %} — Breaking news, everywhere.</p>
+    </footer>
+
+    <script src="{% static 'news/js/main.js' %}?v=2"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

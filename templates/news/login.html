@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Star News 24×7</title>
+    <link rel="stylesheet" href="{% static 'news/css/style.css' %}">
+</head>
+<body class="auth-page">
+    <main class="auth-shell">
+        <section class="auth-panel">
+            <a class="auth-brand" href="{% url 'home' %}">
+                <img class="auth-logo" src="{% static 'news-image/logo.svg.jpeg' %}" alt="Star News 24×7 logo">
+                <span>Star News 24×7</span>
+            </a>
+            <h1>Welcome back</h1>
+            <p>Sign in to access your video news dashboard.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="auth-field">
+                    <label for="id_email">Email</label>
+                    <input id="id_email" class="auth-input" type="email" name="email" placeholder="you@example.com" value="{{ request.POST.email }}" required>
+                </div>
+                <div class="auth-field">
+                    <label for="id_password">Password</label>
+                    <input id="id_password" class="auth-input" type="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="auth-button">Sign in</button>
+            </form>
+
+            <div class="divider"><span>or continue with</span></div>
+            <a class="oauth-button" href="/accounts/google/login/">
+                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google logo">
+                Continue with Google
+            </a>
+
+            <p class="auth-note">New here? <a href="{% url 'register' %}">Create an account</a></p>
+        </section>
+    </main>
+</body>
+</html>
