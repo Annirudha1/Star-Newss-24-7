@@ -2,7 +2,7 @@
 
 This repository contains the Django project for Star News 24/7.
 
-GitHub repository: https://github.com/Annirudha1/Star-News-24-7.git
+
 
 ## Project structure
 
