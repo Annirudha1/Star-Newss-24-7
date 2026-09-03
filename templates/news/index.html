@@ -15,15 +15,31 @@
 <section class="video-grid">
     {% for video in videos %}
     <article class="card">
+        {% if video.uploaded_video %}
+        <div class="video-card">
+            <video class="uploaded-video" controls preload="metadata" playsinline {% if video.thumbnail_url %}poster="{{ video.thumbnail_url }}"{% endif %}>
+                <source src="{{ video.video_url }}">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        {% elif video.embed_url %}
         <div class="video-card" data-watch-url="https://www.youtube.com/watch?v={{ video.video_id }}">
             <button type="button" class="video-preview" data-embed-url="{{ video.embed_url }}" data-watch-url="https://www.youtube.com/watch?v={{ video.video_id }}" style="background-image: url('{{ video.thumbnail_url }}');" aria-label="Play {{ video.title }}">
                 <span class="play-icon"></span>
             </button>
             <div class="video-frame" aria-hidden="true"></div>
         </div>
+        {% else %}
+        <div class="video-card empty-video-card">
+            <p class="empty-video-copy">Video file not available yet.</p>
+        </div>
+        {% endif %}
         <div class="card-body">
             <span class="badge">News Clip</span>
             <h3>{{ video.title }}</h3>
+            {% if video.description %}
+            <p class="description">{{ video.description }}</p>
+            {% endif %}
             <p class="meta">Published {{ video.created_at|date:'F j, Y H:i' }}</p>
             <div class="video-controls">
                 <button type="button" class="like-btn" data-pk="{{ video.id }}" aria-label="Like this video">
@@ -60,7 +76,7 @@
     </article>
     {% empty %}
     <div class="empty-state">
-        <p>No videos yet. Add YouTube links in the Django admin to fill this page.</p>
+        <p>No videos yet. Add a description, thumbnail, and video file in the Django admin to fill this page.</p>
     </div>
     {% endfor %}
 </section>

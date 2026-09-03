@@ -1,16 +1,35 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
-from django.shortcuts import get_object_or_404, redirect, render
-from rest_framework import generics
-from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseForbidden
-from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.db.models import Prefetch
+from django.http import HttpResponseBadRequest, JsonResponse
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404, redirect, render
+from rest_framework import generics, permissions, status
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from .authentication import generate_access_token
 from .forms import RegisterForm
-from .models import Category, NewsVideo
-from .serializers import NewsVideoSerializer
+from .models import Category, Comment, NewsVideo
+from .serializers import (
+    CommentSerializer,
+    LoginSerializer,
+    NewsVideoSerializer,
+    RegisterSerializer,
+    UserSerializer,
+    UserUpdateSerializer,
+)
 
 User = get_user_model()
+
+
+class IsCommentOwnerOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user.is_staff or obj.user_id == request.user.id
 
 
 def home(request, category_slug=None):
@@ -127,10 +146,190 @@ def comment_create(request, pk):
 
 
 class NewsVideoListCreateAPIView(generics.ListCreateAPIView):
-    queryset = NewsVideo.objects.all()
     serializer_class = NewsVideoSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
+
+    def get_queryset(self):
+        queryset = NewsVideo.objects.select_related('category').prefetch_related(
+            'likes',
+            Prefetch('comments', queryset=Comment.objects.select_related('user')),
+        )
+        category_slug = self.request.query_params.get('category')
+        if category_slug:
+            queryset = queryset.filter(category__slug=category_slug)
+        return queryset
 
 
 class NewsVideoRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = NewsVideo.objects.all()
     serializer_class = NewsVideoSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        return NewsVideo.objects.select_related('category').prefetch_related(
+            'likes',
+            Prefetch('comments', queryset=Comment.objects.select_related('user')),
+        )
+
+class RegisterAPIView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def _get_input_data(self, request):
+        if request.method == 'GET':
+            return request.query_params
+        return request.data
+
+    def get(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=self._get_input_data(request))
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response(
+            {
+                'token': generate_access_token(user),
+                'user': UserSerializer(user).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class LoginAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def _get_input_data(self, request):
+        if request.method == 'GET':
+            return request.query_params
+        return request.data
+
+    def get(self, request):
+        return self._authenticate(request)
+
+    def post(self, request):
+        return self._authenticate(request)
+
+    def _authenticate(self, request):
+        serializer = LoginSerializer(data=self._get_input_data(request), context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        return Response(
+            {
+                'token': serializer.validated_data['token'],
+                'user': UserSerializer(serializer.validated_data['user']).data,
+            }
+        )
+
+
+class LogoutAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        return self.post(request)
+
+    def post(self, request):
+        return Response({'detail': 'Logged out successfully.'})
+
+
+class MeAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        return Response(UserSerializer(request.user).data)
+
+    def patch(self, request):
+        serializer = UserUpdateSerializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(UserSerializer(request.user).data)
+
+
+class UserListAPIView(generics.ListAPIView):
+    queryset = User.objects.order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class UserRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class VideoLikeAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+    def get(self, request, pk):
+        video = get_object_or_404(NewsVideo, pk=pk)
+        action = request.query_params.get('action')
+        if action == 'toggle':
+            if not request.user.is_authenticated:
+                return Response({'detail': 'Authentication credentials were not provided.'}, status=status.HTTP_401_UNAUTHORIZED)
+            if video.likes.filter(pk=request.user.pk).exists():
+                video.likes.remove(request.user)
+                liked = False
+            else:
+                video.likes.add(request.user)
+                liked = True
+            return Response({'liked': liked, 'count': video.like_count})
+        if action == 'like':
+            if not request.user.is_authenticated:
+                return Response({'detail': 'Authentication credentials were not provided.'}, status=status.HTTP_401_UNAUTHORIZED)
+            video.likes.add(request.user)
+            return Response({'liked': True, 'count': video.like_count})
+        if action == 'unlike':
+            if not request.user.is_authenticated:
+                return Response({'detail': 'Authentication credentials were not provided.'}, status=status.HTTP_401_UNAUTHORIZED)
+            video.likes.remove(request.user)
+            return Response({'liked': False, 'count': video.like_count})
+
+        liked = False
+        if request.user.is_authenticated:
+            liked = video.likes.filter(pk=request.user.pk).exists()
+        return Response({'liked': liked, 'count': video.like_count})
+
+    def post(self, request, pk):
+        video = get_object_or_404(NewsVideo, pk=pk)
+        video.likes.add(request.user)
+        return Response({'liked': True, 'count': video.like_count})
+
+    def delete(self, request, pk):
+        video = get_object_or_404(NewsVideo, pk=pk)
+        video.likes.remove(request.user)
+        return Response({'liked': False, 'count': video.like_count})
+
+
+class VideoCommentListCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
+
+    def get_queryset(self):
+        return Comment.objects.filter(video_id=self.kwargs['pk']).select_related('user', 'video')
+
+    def perform_create(self, serializer):
+        video = get_object_or_404(NewsVideo, pk=self.kwargs['pk'])
+        serializer.save(video=video, user=self.request.user)
+
+
+class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.select_related('user', 'video')
+    serializer_class = CommentSerializer
+    permission_classes = [IsCommentOwnerOrReadOnly]
