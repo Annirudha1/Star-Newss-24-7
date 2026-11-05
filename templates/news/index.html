@@ -7,7 +7,7 @@
         {% if selected_category %}
             <p>Showing videos for category “{{ selected_category.name }}”.</p>
         {% else %}
-            <p>Stay informed with the latest headlines, video reports, and real-time updates from India and around the world.</p>
+            <p>Original news reporting and video updates produced by STAR NEWS 24×7. Follow the latest stories from our newsroom.</p>
         {% endif %}
     </div>
 </section>
@@ -35,12 +35,23 @@
         </div>
         {% endif %}
         <div class="card-body">
-            <span class="badge">News Clip</span>
+            <span class="badge">Original STAR NEWS 24×7 Report</span>
             <h3>{{ video.title }}</h3>
             {% if video.description %}
             <p class="description">{{ video.description }}</p>
             {% endif %}
-            <p class="meta">Published {{ video.created_at|date:'F j, Y H:i' }}</p>
+            <p class="meta">Posted {{ video.created_at|date:'F j, Y H:i' }}</p>
+            {% if video.original_source or video.original_author or video.original_article_url or video.original_published_at or video.original_updated_at or video.image_credit %}
+            <div class="attribution">
+                <strong>Reporting and media details</strong>
+                {% if video.original_source %}<span>Source: {{ video.original_source.name }}</span>{% endif %}
+                {% if video.original_author %}<span>Author: {{ video.original_author }}</span>{% endif %}
+                {% if video.original_article_url %}<span>Original article: <a href="{{ video.original_article_url }}" target="_blank" rel="noopener noreferrer">{{ video.original_article_url }}</a></span>{% endif %}
+                {% if video.original_published_at %}<span>Originally published: {{ video.original_published_at|date:'F j, Y, H:i T' }}</span>{% endif %}
+                {% if video.original_updated_at %}<span>Source updated: {{ video.original_updated_at|date:'F j, Y, H:i T' }}</span>{% endif %}
+                {% if video.image_credit %}<span>Image credit: {{ video.image_credit }}</span>{% endif %}
+            </div>
+            {% endif %}
             <div class="video-controls">
                 <button type="button" class="like-btn" data-pk="{{ video.id }}" aria-label="Like this video">
                     <span class="like-icon">❤</span>
@@ -85,7 +96,7 @@
     <div class="content-grid">
         <article class="content-card">
             <h3>About Us</h3>
-            <p>Star News 24×7 brings you trusted news videos, live headlines, and trending stories from across India and beyond.</p>
+            <p>STAR NEWS 24×7 publishes original reporting and video coverage to keep readers informed about current events.</p>
             <p><a href="{% url 'about' %}">Learn more about our mission</a></p>
         </article>
         <article class="content-card">

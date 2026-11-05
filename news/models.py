@@ -40,10 +40,84 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
 
+class NewsSource(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    website_url = models.URLField(blank=True)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class RSSFeed(models.Model):
+    source = models.ForeignKey(NewsSource, on_delete=models.PROTECT, related_name='feeds')
+    feed_url = models.URLField(unique=True)
+    is_active = models.BooleanField(default=True)
+    last_fetched_at = models.DateTimeField(blank=True, null=True)
+    last_error = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['source__name', 'feed_url']
+        verbose_name = 'RSS feed'
+        verbose_name_plural = 'RSS feeds'
+
+    def __str__(self):
+        return f'{self.source}: {self.feed_url}'
+
+
+class NewsArticle(models.Model):
+    source = models.ForeignKey(NewsSource, on_delete=models.PROTECT, related_name='articles')
+    feed = models.ForeignKey(
+        RSSFeed,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='articles',
+    )
+    title = models.CharField(max_length=500)
+    summary = models.TextField(blank=True)
+    original_author = models.CharField(max_length=200, blank=True)
+    original_url = models.URLField()
+    external_id = models.CharField(max_length=500, blank=True)
+    original_published_at = models.DateTimeField(blank=True, null=True)
+    original_updated_at = models.DateTimeField(blank=True, null=True)
+    image_url = models.URLField(blank=True)
+    image_credit = models.CharField(max_length=300, blank=True)
+    imported_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-original_published_at', '-imported_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['feed', 'external_id'],
+                name='unique_article_id_per_feed',
+            ),
+        ]
+
+    def __str__(self):
+        return self.title
+
+
 class NewsVideo(models.Model):
     title = models.CharField(max_length=255)
     youtube_link = models.URLField(blank=True)
     description = models.TextField(blank=True)
+    original_source = models.ForeignKey(
+        NewsSource,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='videos',
+    )
+    original_author = models.CharField(max_length=200, blank=True)
+    original_article_url = models.URLField(blank=True)
+    original_published_at = models.DateTimeField(blank=True, null=True)
+    original_updated_at = models.DateTimeField(blank=True, null=True)
+    image_credit = models.CharField(max_length=300, blank=True)
     thumbnail = models.ImageField(upload_to=news_video_thumbnail_path, blank=True, null=True)
     uploaded_video = models.FileField(upload_to=news_video_file_path, blank=True, null=True)
     category = models.ForeignKey('Category', blank=True, null=True, on_delete=models.SET_NULL, related_name='videos')

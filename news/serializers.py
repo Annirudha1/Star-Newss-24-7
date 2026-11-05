@@ -132,6 +132,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class NewsVideoSerializer(serializers.ModelSerializer):
     thumbnail_url = serializers.CharField(read_only=True)
     video_url = serializers.CharField(read_only=True)
+    original_source_name = serializers.CharField(source='original_source.name', read_only=True, allow_null=True)
     like_count = serializers.IntegerField(read_only=True)
     comment_count = serializers.SerializerMethodField()
     category = CategorySerializer(read_only=True)
@@ -154,6 +155,12 @@ class NewsVideoSerializer(serializers.ModelSerializer):
             'thumbnail',
             'uploaded_video',
             'created_at',
+            'original_source_name',
+            'original_author',
+            'original_article_url',
+            'original_published_at',
+            'original_updated_at',
+            'image_credit',
             'thumbnail_url',
             'video_url',
             'like_count',
@@ -164,6 +171,9 @@ class NewsVideoSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'id',
             'created_at',
+            'original_source_name',
+            'original_published_at',
+            'original_updated_at',
             'thumbnail_url',
             'video_url',
             'like_count',

@@ -1,0 +1,25 @@
+{% extends "news/base.html" %}
+
+{% block title %}Original Content &amp; Attribution Policy | STAR NEWS 24×7{% endblock %}
+{% block meta_description %}Learn how STAR NEWS 24×7 produces original news and identifies bylines, supporting sources, updates, and media credits when applicable.{% endblock %}
+
+{% block content %}
+<article class="legal-document">
+    <h1 class="page-title">Original Content &amp; Attribution Policy</h1>
+    <p class="legal-updated">STAR NEWS 24×7 · Publisher: Sunil Sharma</p>
+    <div class="content-card">
+        <h2>Original reporting</h2>
+        <p>News reports and video coverage published on this website are produced by STAR NEWS 24×7. We do not import or republish articles through RSS feeds. The publisher is Sunil Sharma.</p>
+        <h2>Bylines, supporting sources, and credits</h2>
+        <ul>
+            <li>Reporter or author bylines are shown when assigned and confirmed.</li>
+            <li>Supporting sources or references may be identified when relevant to a report.</li>
+            <li>Image and media credits are included when applicable and known.</li>
+            <li>Publication and update dates refer to the STAR NEWS 24×7 item.</li>
+        </ul>
+        <p>We do not invent bylines, references, dates, or credits. Contact us if you believe a credit or detail is missing or incorrect.</p>
+        <h2>Corrections and questions</h2>
+        <p>Email <a href="mailto:starnewshindimodinagar@gmail.com">starnewshindimodinagar@gmail.com</a> with the item link and the details. See our <a href="{% url 'corrections-policy' %}">Corrections Policy</a>.</p>
+    </div>
+</article>
+{% endblock %}

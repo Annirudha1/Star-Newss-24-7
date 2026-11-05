@@ -1,42 +1,20 @@
 {% extends "news/base.html" %}
 
+{% block title %}About Us | STAR NEWS 24×7{% endblock %}
+{% block meta_description %}Learn about STAR NEWS 24×7, its publisher Sunil Sharma, and our original news reporting and video coverage.{% endblock %}
+
 {% block content %}
-<section class="content-panel">
-    <h1 class="page-title">About Star News 24×7</h1>
+<article class="legal-document">
+    <h1 class="page-title">About STAR NEWS 24×7</h1>
     <div class="content-card">
-        <p>Welcome to StarNewz, your trusted source for the latest news, breaking stories, and informative content from around the world.
-
-At StarNewz, our mission is to provide accurate, timely, and reliable news across various categories, including Politics, Technology, Business, Sports, Entertainment, Health, Education, and more. We strive to keep our readers informed with high-quality journalism and meaningful insights.
-
-Our platform is designed to deliver news in a simple, accessible, and user-friendly format so that readers can stay updated anytime and anywhere. We are committed to maintaining transparency, credibility, and integrity in every piece of content we publish.
-
-Whether it's breaking news, trending topics, live updates, or in-depth analysis, StarNewz aims to bring valuable information to our audience quickly and efficiently.</p>
-        
+        <p>STAR NEWS 24×7 is a digital news publication producing original news reporting and video updates for readers. Our newsroom creates and publishes its own coverage for the website.</p>
+        <h2>Publisher</h2>
+        <p><strong>Publication:</strong> STAR NEWS 24×7<br>
+        <strong>Publisher / Owner:</strong> Sunil Sharma<br>
+        <strong>Website:</strong> <a href="https://starnews24x7.com/">https://starnews24x7.com</a></p>
+        <p>News coverage published on this website is original STAR NEWS 24×7 content. Supporting materials or media credits are identified when applicable and known; we do not invent author names or credits. Read our <a href="{% url 'editorial-policy' %}">Editorial Policy</a> and <a href="{% url 'sources-policy' %}">Original Content &amp; Attribution Policy</a>.</p>
+        <h2>Contact</h2>
+        <p>For editorial questions, news tips, corrections, or other publisher inquiries, contact <a href="mailto:starnewshindimodinagar@gmail.com">starnewshindimodinagar@gmail.com</a> or call <a href="tel:8218662951">8218662951</a>. Visit <a href="{% url 'contact' %}">Contact Us</a> for technical support details.</p>
     </div>
-    <div class="content-card">
-
-        <h3>Our Mission</h3>
-        <ul>
-            <li>Deliver accurate and trustworthy news.</li>
-            <li>Keep readers informed about current events</li>
-            <li>Promote responsible and ethical journalism.</li>
-            <li>Provide a seamless digital news experience.</li>
-        </ul>
-
-        <h3>What we offer</h3>
-        <ul>
-            <li>Daily news videos and short visual briefs.</li>
-            <li>Category-based news coverage that helps you find the topics you care about.</li>
-            <li>Easy access to updates on tech, politics, sports, entertainment, and more.</li>
-        </ul>
-
-        <h3>Why Choose StarNewz?</h3>
-        <ul>
-            <li>Fast and timely updates.</li>
-            <li>Easy-to-read news articles and videos.</li>
-            <li>Coverage across multiple categories.</li>
-            <li>User-friendly platform accessible on web and mobile devices.</li>
-        </ul>
-    </div>
-</section>
+</article>
 {% endblock %}

@@ -1,0 +1,38 @@
+{% extends "news/base.html" %}
+
+{% block content %}
+<article class="legal-document">
+    <h1 class="page-title">Delete Your Account</h1>
+    <p class="legal-updated">STAR NEWS 24×7 account and data deletion</p>
+    <div class="content-card">
+        <p>You can permanently delete your STAR NEWS 24×7 account and associated personal data here. This action cannot be undone.</p>
+
+        <h2>What will be deleted</h2>
+        <ul>
+            <li>Your STAR NEWS 24×7 account, including username, email address, profile name, password hash, and local Google sign-in connection record.</li>
+            <li>Comments posted from your account.</li>
+            <li>Your video likes and active sign-in access, including issued API tokens.</li>
+        </ul>
+        <p>Videos and other content managed by STAR NEWS 24×7 are not associated with an individual account and are not deleted by this action. Backup copies, where maintained, may remain until routine backup rotation. Certain records may be retained where required by law.</p>
+
+        {% if request.user.is_authenticated %}
+            <h2>Confirm deletion</h2>
+            <p>Signed in as <strong>{{ request.user.email|default:request.user.username }}</strong>.</p>
+            <form method="post" action="{% url 'delete-account' %}">
+                {% csrf_token %}
+                <label class="delete-confirmation">
+                    <input type="checkbox" name="confirm_delete" value="yes" required>
+                    <span>I understand that my account and associated comments and likes will be permanently deleted.</span>
+                </label>
+                <button class="delete-account-button" type="submit">Permanently delete my account</button>
+            </form>
+        {% else %}
+            <h2>Sign in to continue</h2>
+            <p>For your security, sign in to the account you want to delete, then return to this page to confirm.</p>
+            <p><a href="{% url 'login' %}">Sign in to STAR NEWS 24×7</a></p>
+        {% endif %}
+
+        <p>Need help with a deletion request? Contact the publisher at <a href="mailto:starnewshindimodinagar@gmail.com">starnewshindimodinagar@gmail.com</a>.</p>
+    </div>
+</article>
+{% endblock %}

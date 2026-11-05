@@ -68,6 +68,53 @@ def contact_view(request):
     })
 
 
+def privacy_policy_view(request):
+    return public_policy_view(request, 'news/privacy_policy.html', 'privacy-policy')
+
+
+def editorial_policy_view(request):
+    return public_policy_view(request, 'news/editorial_policy.html', 'editorial-policy')
+
+
+def corrections_policy_view(request):
+    return public_policy_view(request, 'news/corrections_policy.html', 'corrections-policy')
+
+
+def terms_view(request):
+    return public_policy_view(request, 'news/terms.html', 'terms')
+
+
+def sources_policy_view(request):
+    return public_policy_view(request, 'news/sources_policy.html', 'sources-policy')
+
+
+def public_policy_view(request, template_name, current_page):
+    return render(request, template_name, {
+        'current_page': current_page,
+        'categories': Category.objects.all(),
+        'selected_category': None,
+    })
+
+
+def delete_account_view(request):
+    if request.method == 'POST' and not request.user.is_authenticated:
+        return redirect('login')
+
+    if request.method == 'POST' and request.POST.get('confirm_delete') == 'yes':
+        account = request.user
+        logout(request)
+        Comment.objects.filter(user=account).delete()
+        account.delete()
+        messages.success(request, 'Your account and associated comments have been deleted.')
+        return redirect('home')
+
+    return render(request, 'news/delete_account.html', {
+        'current_page': 'delete-account',
+        'categories': Category.objects.all(),
+        'selected_category': None,
+    })
+
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -251,6 +298,12 @@ class MeAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(UserSerializer(request.user).data)
+
+    def delete(self, request):
+        account = request.user
+        Comment.objects.filter(user=account).delete()
+        account.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserListAPIView(generics.ListAPIView):

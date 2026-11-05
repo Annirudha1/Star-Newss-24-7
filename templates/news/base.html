@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star News 24×7</title>
+    <meta name="description" content="{% block meta_description %}STAR NEWS 24×7: original news reporting and video updates from publisher Sunil Sharma, with transparent editorial standards and reader contact details.{% endblock %}">
+    <title>{% block title %}STAR NEWS 24×7 | News and Updates{% endblock %}</title>
     <link rel="icon" type="image/png" href="{% static 'news-image/star news favicon.png' %}">
     <link rel="stylesheet" href="{% static 'news/css/style.css' %}">
 </head>
@@ -30,6 +31,7 @@
             <nav class="nav-menu" id="nav-menu" aria-label="Primary navigation">
                 <ul class="nav-list">
                     <li><a href="{% url 'home' %}" class="nav-link{% if current_page == 'home' %} active{% endif %}">Home</a></li>
+                    <li><a href="{% url 'contact' %}" class="nav-link{% if current_page == 'contact' %} active{% endif %}">Contact</a></li>
                     {% for category in categories %}
                         <li><a href="{% url 'category_videos' category.slug %}" class="nav-link{% if selected_category == category %} active{% endif %}">{{ category.name }}</a></li>
                     {% empty %}
@@ -73,7 +75,18 @@
     </main>
 
     <footer class="footer-bar">
-        <p>Star News 24×7 © {% now "Y" %} — Breaking news, everywhere.</p>
+        <p>STAR NEWS 24×7 © {% now "Y" %}. Publisher: Sunil Sharma.</p>
+        <p><a href="mailto:starnewshindimodinagar@gmail.com">starnewshindimodinagar@gmail.com</a> · <a href="tel:8218662951">8218662951</a></p>
+        <nav class="footer-links" aria-label="About and policies">
+            <a href="{% url 'about' %}">About Us</a>
+            <a href="{% url 'contact' %}">Contact Us</a>
+            <a href="{% url 'editorial-policy' %}">Editorial Policy</a>
+            <a href="{% url 'corrections-policy' %}">Corrections Policy</a>
+            <a href="{% url 'privacy-policy' %}">Privacy Policy</a>
+            <a href="{% url 'terms' %}">Terms &amp; Conditions</a>
+            <a href="{% url 'sources-policy' %}">Original Content &amp; Attribution</a>
+            <a href="{% url 'delete-account' %}">Delete Account</a>
+        </nav>
     </footer>
 
     <script src="{% static 'news/js/main.js' %}?v=2"></script>

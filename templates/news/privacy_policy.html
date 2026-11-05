@@ -1,0 +1,39 @@
+{% extends "news/base.html" %}
+
+{% block title %}Privacy Policy | STAR NEWS 24×7{% endblock %}
+{% block meta_description %}Read how STAR NEWS 24×7 handles account, comment, like, cookie, and technical information and how to request account deletion.{% endblock %}
+
+{% block content %}
+<article class="legal-document">
+    <h1 class="page-title">Privacy Policy</h1>
+    <p class="legal-updated">Last updated: November 5, 2026</p>
+    <div class="content-card">
+        <p>This policy describes information handled when you use <a href="https://starnews24x7.com/">https://starnews24x7.com</a> and STAR NEWS 24×7 website services. The publication is owned by Sunil Sharma.</p>
+
+        <h2>Information handled</h2>
+        <ul>
+            <li><strong>Account information:</strong> username, email address, optional profile name, account creation date, and a password hash when you create an account. We do not store your plain-text password.</li>
+            <li><strong>Google Sign-In:</strong> if you choose Google sign-in, Google provides profile and email information needed for sign-in. We do not receive your Google password.</li>
+            <li><strong>Comments and likes:</strong> comments you submit and the videos you like are associated with your account. Comments may be visible with your username.</li>
+            <li><strong>Technical data:</strong> hosting and security systems may process standard request information, such as IP address, browser or device details, and timestamps, to operate and protect the service. Retention depends on the hosting configuration.</li>
+            <li><strong>Cookies:</strong> session and security cookies are used for sign-in and protected actions.</li>
+        </ul>
+
+        <h2>How information is used and shared</h2>
+        <p>We use information to provide accounts, authentication, comments, likes, and support; troubleshoot the service; and protect users and the website. We do not sell personal information. Information may be disclosed to service providers that operate the website, when required by law, or when reasonably necessary to protect the service.</p>
+        <p>If you use Google sign-in, YouTube embeds, or thumbnails, those providers may receive technical information under their own privacy policies. Our news reports and videos are created by STAR NEWS 24×7; external services are used only for features such as sign-in or video playback.</p>
+
+        <h2>Retention and security</h2>
+        <p>Account information is retained while an account is active. Account deletion removes the account, its comments, and its likes from active service records. Backup copies, if maintained, may remain until routine rotation. Some information may be retained when required by law or needed to address security or legal issues. We use reasonable safeguards, but no internet service can guarantee absolute security.</p>
+
+        <h2>Your choices and account deletion</h2>
+        <p>You may stop using the service at any time. To delete your account and associated comments and likes, visit <a href="{% url 'delete-account' %}">Delete Account</a>, sign in, and confirm the request. Deletion is permanent. News content managed by the publication is not deleted with an account.</p>
+
+        <h2>Children</h2>
+        <p>STAR NEWS 24×7 is a general-audience news service and is not designed to collect personal information from children under 13. Contact us if you believe a child has provided personal information so we can review the request.</p>
+
+        <h2>Changes and privacy contact</h2>
+        <p>We may update this policy as the service changes. For privacy questions or account-deletion help, contact the publisher at <a href="mailto:starnewshindimodinagar@gmail.com">starnewshindimodinagar@gmail.com</a>.</p>
+    </div>
+</article>
+{% endblock %}

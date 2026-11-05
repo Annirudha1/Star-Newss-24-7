@@ -1,0 +1,20 @@
+{% extends "news/base.html" %}
+
+{% block title %}Corrections Policy | STAR NEWS 24×7{% endblock %}
+{% block meta_description %}How to report an error and how STAR NEWS 24×7 reviews, corrects, and identifies significant changes to published news items.{% endblock %}
+
+{% block content %}
+<article class="legal-document">
+    <h1 class="page-title">Corrections Policy</h1>
+    <p class="legal-updated">STAR NEWS 24×7 · Publisher: Sunil Sharma</p>
+    <div class="content-card">
+        <h2>Report a possible error</h2>
+        <p>Email <a href="mailto:starnewshindimodinagar@gmail.com">starnewshindimodinagar@gmail.com</a> with the article or video URL, the specific information you believe is incorrect, and a reliable source or supporting detail if available. The publisher contact is also listed on <a href="{% url 'contact' %}">Contact Us</a>.</p>
+        <h2>Review and correction</h2>
+        <p>We review correction requests and, when an error is confirmed, update the affected item as appropriate. Material corrections should be made clearly, and a correction note or updated date should be shown when available. Minor spelling or formatting changes may be made without a separate notice.</p>
+        <h2>Our original reporting</h2>
+        <p>News reports and video coverage on this website are produced by STAR NEWS 24×7. We review reported errors in our own content and update or clarify an item when appropriate. If a correction concerns supporting material or a credited image, include that detail in your request.</p>
+        <p>We do not promise a response time, but consider requests as promptly as possible.</p>
+    </div>
+</article>
+{% endblock %}

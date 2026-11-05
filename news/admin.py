@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from botocore.exceptions import ClientError
 
-from .models import Category, NewsVideo, Comment
+from .models import Category, Comment, NewsSource, NewsVideo
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -15,14 +15,33 @@ class CategoryAdmin(admin.ModelAdmin):
     ordering = ('sort_order', 'name')
 
 
+@admin.register(NewsSource)
+class NewsSourceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'website_url')
+    search_fields = ('name', 'website_url', 'notes')
+
+
 @admin.register(NewsVideo)
 class NewsVideoAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'thumbnail_preview', 'video_file_link', 'created_at', 'delete_button')
-    list_filter = ('category',)
-    search_fields = ('title', 'description', 'category__name')
+    list_display = ('title', 'category', 'original_source', 'original_published_at', 'thumbnail_preview', 'video_file_link', 'created_at', 'delete_button')
+    list_filter = ('category', 'original_source')
+    search_fields = ('title', 'description', 'category__name', 'original_source__name', 'original_author')
     readonly_fields = ('created_at', 'thumbnail_preview', 'video_file_link')
     ordering = ('-created_at',)
-    fields = ('title', 'description', 'thumbnail', 'uploaded_video', 'category', 'created_at', 'thumbnail_preview', 'video_file_link')
+    fieldsets = (
+        (None, {'fields': ('title', 'description', 'thumbnail', 'uploaded_video', 'category')}),
+        ('Original attribution', {
+            'fields': (
+                'original_source',
+                'original_author',
+                'original_article_url',
+                'original_published_at',
+                'original_updated_at',
+                'image_credit',
+            ),
+        }),
+        ('Media and publication', {'fields': ('created_at', 'thumbnail_preview', 'video_file_link')}),
+    )
 
     def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
         try:

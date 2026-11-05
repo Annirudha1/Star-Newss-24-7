@@ -1,0 +1,23 @@
+{% extends "news/base.html" %}
+
+{% block title %}Editorial Policy | STAR NEWS 24×7{% endblock %}
+{% block meta_description %}STAR NEWS 24×7 editorial standards for original reporting, accuracy, bylines, updates, corrections, and transparent media credits.{% endblock %}
+
+{% block content %}
+<article class="legal-document">
+    <h1 class="page-title">Editorial Policy</h1>
+    <p class="legal-updated">STAR NEWS 24×7 · Publisher: Sunil Sharma</p>
+    <div class="content-card">
+        <h2>Our responsibility</h2>
+        <p>STAR NEWS 24×7 publishes original news reporting and video coverage under the responsibility of publisher Sunil Sharma. Our newsroom prepares the reports published on this website. Individual bylines are shown only when supplied by the newsroom.</p>
+        <h2>Accuracy and verification</h2>
+        <p>We seek to check names, dates, locations, and key claims against available information before publication. Breaking reports may develop and be updated. We will correct material errors under our <a href="{% url 'corrections-policy' %}">Corrections Policy</a>.</p>
+        <h2>Original content and credits</h2>
+        <p>News reports and video coverage on this website are produced by STAR NEWS 24×7. Where supporting information, media, or image credits apply, we identify them when known. Author names and credits are not guessed. See our <a href="{% url 'sources-policy' %}">Original Content &amp; Attribution Policy</a>.</p>
+        <h2>Independence and transparency</h2>
+        <p>We aim to distinguish news reporting from commentary and to identify sponsored or promotional material if published. Readers may contact the publisher with questions about an item.</p>
+        <h2>Contact the publisher</h2>
+        <p>Email <a href="mailto:starnewshindimodinagar@gmail.com">starnewshindimodinagar@gmail.com</a> for editorial questions or visit <a href="{% url 'contact' %}">Contact Us</a>.</p>
+    </div>
+</article>
+{% endblock %}

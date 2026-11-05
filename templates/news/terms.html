@@ -1,0 +1,24 @@
+{% extends "news/base.html" %}
+
+{% block title %}Terms &amp; Conditions | STAR NEWS 24×7{% endblock %}
+{% block meta_description %}Terms for using STAR NEWS 24×7 website, accounts, comments, and original news reporting.{% endblock %}
+
+{% block content %}
+<article class="legal-document">
+    <h1 class="page-title">Terms &amp; Conditions</h1>
+    <p class="legal-updated">Last updated: November 5, 2026</p>
+    <div class="content-card">
+        <p>These terms apply to your use of the STAR NEWS 24×7 website at <a href="https://starnews24x7.com/">starnews24x7.com</a>. The publication is owned by Sunil Sharma. By using the website, you agree to these terms.</p>
+        <h2>Original news content</h2>
+        <p>News reports and video coverage on this website are produced by STAR NEWS 24×7. Bylines, supporting references, and media credits are shown when applicable and known. Do not copy or republish website content without permission from the rights holder.</p>
+        <h2>Acceptable use</h2>
+        <p>Do not use the website to violate law, interfere with its operation, attempt unauthorized access, or post unlawful, abusive, or infringing comments. We may remove comments or restrict accounts that misuse the service.</p>
+        <h2>Accounts and user comments</h2>
+        <p>You are responsible for activity on your account and for content you submit. Do not share passwords or impersonate others. You may request account deletion through the public <a href="{% url 'delete-account' %}">Delete Account</a> page.</p>
+        <h2>Availability and external links</h2>
+        <p>We may update, suspend, or discontinue parts of the website. External links are provided for reference; STAR NEWS 24×7 does not control third-party sites or their content and policies.</p>
+        <h2>Contact</h2>
+        <p>Questions about these terms may be sent to publisher Sunil Sharma at <a href="mailto:starnewshindimodinagar@gmail.com">starnewshindimodinagar@gmail.com</a>.</p>
+    </div>
+</article>
+{% endblock %}
